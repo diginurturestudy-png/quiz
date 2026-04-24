@@ -4,29 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Body Parts Exercise Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .question { margin-bottom: 20px; }
+        .feedback { margin: 5px 0; }
+        .correct { color: green; }
+        .wrong { color: red; }
+        #score { font-weight: bold; }
+    </style>
 </head>
 <body>
     <h1>Body Parts Exercise Quiz</h1>
-    <form>
-        <label for="question1">1. What is the largest organ in the human body?</label><br>
-        <input type="radio" name="question1" value="A"> A) Heart<br>
-        <input type="radio" name="question1" value="B"> B) Skin<br>
-        <input type="radio" name="question1" value="C"> C) Liver<br>
-        <input type="radio" name="question1" value="D"> D) Lung<br><br>
-        
-        <label for="question2">2. How many bones are in the adult human body?</label><br>
-        <input type="radio" name="question2" value="A"> A) 206<br>
-        <input type="radio" name="question2" value="B"> B) 205<br>
-        <input type="radio" name="question2" value="C"> C) 201<br>
-        <input type="radio" name="question2" value="D"> D) 208<br><br>
-        
-        <label for="question3">3. What is the function of the skeleton?</label><br>
-        <input type="radio" name="question3" value="A"> A) To move the body<br>
-        <input type="radio" name="question3" value="B"> B) To protect internal organs<br>
-        <input type="radio" name="question3" value="C"> C) To produce blood cells<br>
-        <input type="radio" name="question3" value="D"> D) All of the above<br><br>
-        
-        <input type="submit" value="Submit">
-    </form>
+    <div id="quiz"></div>
+    <button id="reset">Reset Quiz</button>
+    <p id="score">Score: 0</p>
+    <script>
+        const questions = [
+            { question: "What is this body part?", answers: ["Heart", "Lung", "Brain", "Liver"], correct: 0 },
+            { question: "What is this body part?", answers: ["Arm", "Leg", "Head", "Foot"], correct: 1 },
+            { question: "What is this body part?", answers: ["Skin", "Nail", "Hair", "Muscle"], correct: 0 },
+            { question: "What is this body part?", answers: ["Knee", "Elbow", "Wrist", "Ankle"], correct: 2 },
+            { question: "What is this body part?", answers: ["Eye", "Ear", "Nose", "Mouth"], correct: 3 }
+        ];
+
+        let score = 0;
+        let questionIndex = 0;
+
+        function loadQuestion() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = '';
+            if (questionIndex < questions.length) {
+                const currentQuestion = questions[questionIndex];
+                const questionElem = document.createElement('div');
+                questionElem.classList.add('question');
+                questionElem.innerHTML = `<p>${currentQuestion.question}</p>`;
+                currentQuestion.answers.forEach((answer, index) => {
+                    const btn = document.createElement('button');
+                    btn.textContent = answer;
+                    btn.onclick = () => checkAnswer(index);
+                    questionElem.appendChild(btn);
+                });
+                quizContainer.appendChild(questionElem);
+            } else {
+                quizContainer.innerHTML = `<h2>Your Final Score: ${score} out of ${questions.length}</h2>`;
+            }
+        }
+
+        function checkAnswer(selected) {
+            const currentQuestion = questions[questionIndex];
+            const feedback = document.createElement('div');
+            feedback.classList.add('feedback');
+            if (selected === currentQuestion.correct) {
+                feedback.textContent = 'Correct!';
+                feedback.classList.add('correct');
+                score++;
+            } else {
+                feedback.textContent = 'Wrong! The correct answer was ' + currentQuestion.answers[currentQuestion.correct] + '.';
+                feedback.classList.add('wrong');
+            }
+            questionIndex++;
+            document.getElementById('quiz').appendChild(feedback);
+            loadQuestion();
+            document.getElementById('score').textContent = 'Score: ' + score;
+        }
+
+        document.getElementById('reset').onclick = function() {
+            score = 0;
+            questionIndex = 0;
+            loadQuestion();
+            document.getElementById('score').textContent = 'Score: 0';
+        };
+
+        loadQuestion();
+    </script>
 </body>
 </html>
